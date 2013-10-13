@@ -32,10 +32,8 @@ public class Main extends JavaPlugin{
 				@SuppressWarnings("deprecation")
 				Human h = new Human(player.getWorld(), args[0], new Random().nextInt(5000-1000)+1000, player.getLocation(), player.getItemInHand().getTypeId());
 				h.setItemInHand(new ItemStack(Material.BOW));
-				byte x = (byte) (h.getX() + 0.5);
-				byte y = (byte) (h.getY());
-				byte z = (byte) (h.getZ());
-				h.walk(x, y, z);
+				h.walk(h.getX() + 5, h.getY(), h.getZ());
+				h.setCrouched();
 			}
 		}
 		
