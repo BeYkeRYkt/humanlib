@@ -10,9 +10,11 @@ import net.minecraft.server.v1_6_R3.EntityHuman;
 import net.minecraft.server.v1_6_R3.Packet20NamedEntitySpawn;
 import net.minecraft.server.v1_6_R3.Packet29DestroyEntity;
 import net.minecraft.server.v1_6_R3.Packet33RelEntityMoveLook;
+import net.minecraft.server.v1_6_R3.Packet40EntityMetadata;
 import net.minecraft.server.v1_6_R3.Packet5EntityEquipment;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
@@ -126,6 +128,57 @@ public class Human{
 		}
 	}
 	
+	@Deprecated
+	public void setName(String s) {
+		DataWatcher d = new DataWatcher();
+		d.a(0, (Object) (byte) 0);
+		d.a(1, (Object) (short) 0);
+		d.a(8, (Object) (byte) 0);
+		d.a(10, (Object) (String) s);
+		//d.a(11, (Object) (byte) 0);
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+		}
+	}
+	
+	public void hideForPlayer(Player p) {
+		DataWatcher d = new DataWatcher();
+		d.a(0, (Object) (byte) 32);
+		d.a(1, (Object) (short) 0);
+		d.a(8, (Object) (byte) 0);
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
+		((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+	}
+	
+	public void showForPlayer(Player p) {
+		DataWatcher d = new DataWatcher();
+		d.a(0, (Object) (byte) 0);
+		d.a(1, (Object) (short) 0);
+		d.a(8, (Object) (byte) 0);
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
+		((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+	}
+	
+	public void addPotionColor(Color r) {
+		int color = r.asBGR();
+		final DataWatcher dw = new DataWatcher();
+		dw.a(7, Integer.valueOf(color));
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, dw, true);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+		}
+	}
+	
+	public void addPotionColor(int color) {
+		final DataWatcher dw = new DataWatcher();
+		dw.a(7, Integer.valueOf(color));
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, dw, true);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+		}
+	}
+	
 	public void walk(double a, double b, double c) {
 		//teleports, not walks
 		byte x = (byte) a;
@@ -147,158 +200,58 @@ public class Human{
 	}
 	
 	public void setInvisible() {
-		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-		}
-		Packet20NamedEntitySpawn spawn = new Packet20NamedEntitySpawn();
-		spawn.a = id;
-		spawn.b = name;
-		spawn.c = l.getBlockX() * 32;
-		spawn.d = l.getBlockY() * 32;
-		spawn.e = l.getBlockZ() * 32;
-		spawn.f = getCompressedAngle(l.getYaw());
-		spawn.g = getCompressedAngle(l.getPitch());
-		spawn.h = itemInHand;
 		DataWatcher d = new DataWatcher();
 		d.a(0, (Object) (byte) 32);
 		d.a(1, (Object) (short) 0);
 		d.a(8, (Object) (byte) 0);
-		try
-		{
-		    Field nameField = Packet20NamedEntitySpawn.class.getDeclaredField("i");
-		    nameField.setAccessible(true);
-		    nameField.set(spawn, d);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
 		}
 	}
 	
 	public void setCrouched() {
-		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-		}
-		Packet20NamedEntitySpawn spawn = new Packet20NamedEntitySpawn();
-		spawn.a = id;
-		spawn.b = name;
-		spawn.c = l.getBlockX() * 32;
-		spawn.d = l.getBlockY() * 32;
-		spawn.e = l.getBlockZ() * 32;
-		spawn.f = getCompressedAngle(l.getYaw());
-		spawn.g = getCompressedAngle(l.getPitch());
-		spawn.h = itemInHand;
 		DataWatcher d = new DataWatcher();
 		d.a(0, (Object) (byte) 2);
 		d.a(1, (Object) (short) 0);
 		d.a(8, (Object) (byte) 0);
-		try
-		{
-		    Field nameField = Packet20NamedEntitySpawn.class.getDeclaredField("i");
-		    nameField.setAccessible(true);
-		    nameField.set(spawn, d);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
 		}
 	}
 	
 	public void reset() {
-		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-		}
-		Packet20NamedEntitySpawn spawn = new Packet20NamedEntitySpawn();
-		spawn.a = id;
-		spawn.b = name;
-		spawn.c = l.getBlockX() * 32;
-		spawn.d = l.getBlockY() * 32;
-		spawn.e = l.getBlockZ() * 32;
-		spawn.f = getCompressedAngle(l.getYaw());
-		spawn.g = getCompressedAngle(l.getPitch());
-		spawn.h = itemInHand;
 		DataWatcher d = new DataWatcher();
 		d.a(0, (Object) (byte) 0);
 		d.a(1, (Object) (short) 0);
 		d.a(8, (Object) (byte) 0);
-		try
-		{
-		    Field nameField = Packet20NamedEntitySpawn.class.getDeclaredField("i");
-		    nameField.setAccessible(true);
-		    nameField.set(spawn, d);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
 		}
 	}
 	
 	public void sprint() {
-		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-		}
-		Packet20NamedEntitySpawn spawn = new Packet20NamedEntitySpawn();
-		spawn.a = id;
-		spawn.b = name;
-		spawn.c = l.getBlockX() * 32;
-		spawn.d = l.getBlockY() * 32;
-		spawn.e = l.getBlockZ() * 32;
-		spawn.f = getCompressedAngle(l.getYaw());
-		spawn.g = getCompressedAngle(l.getPitch());
-		spawn.h = itemInHand;
 		DataWatcher d = new DataWatcher();
 		d.a(0, (Object) (byte) 8);
 		d.a(1, (Object) (short) 0);
 		d.a(8, (Object) (byte) 0);
-		try
-		{
-		    Field nameField = Packet20NamedEntitySpawn.class.getDeclaredField("i");
-		    nameField.setAccessible(true);
-		    nameField.set(spawn, d);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
 		}
 	}
 	
 	@Deprecated
 	public void block() {
-		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-		}
-		Packet20NamedEntitySpawn spawn = new Packet20NamedEntitySpawn();
-		spawn.a = id;
-		spawn.b = name;
-		spawn.c = l.getBlockX() * 32;
-		spawn.d = l.getBlockY() * 32;
-		spawn.e = l.getBlockZ() * 32;
-		spawn.f = getCompressedAngle(l.getYaw());
-		spawn.g = getCompressedAngle(l.getPitch());
-		spawn.h = itemInHand;
 		DataWatcher d = new DataWatcher();
 		d.a(0, (Object) (byte) 16);
 		d.a(1, (Object) (short) 0);
 		d.a(6, (Object) (byte) 0);
-		try
-		{
-		    Field nameField = Packet20NamedEntitySpawn.class.getDeclaredField("i");
-		    nameField.setAccessible(true);
-		    nameField.set(spawn, d);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
-			((CraftPlayer) p).getHandle().playerConnection.sendPacket(spawn);
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
 		}
 	}
 	

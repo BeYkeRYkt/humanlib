@@ -2,6 +2,7 @@ package me.burnblader.ncptesting;
 
 import java.util.Random;
 
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,8 +33,7 @@ public class Main extends JavaPlugin{
 				@SuppressWarnings("deprecation")
 				Human h = new Human(player.getWorld(), args[0], new Random().nextInt(5000-1000)+1000, player.getLocation(), player.getItemInHand().getTypeId());
 				h.setItemInHand(new ItemStack(Material.BOW));
-				h.walk(h.getX() + 5, h.getY(), h.getZ());
-				h.setCrouched();
+				h.addPotionColor(Color.PURPLE.asBGR());
 			}
 		}
 		
