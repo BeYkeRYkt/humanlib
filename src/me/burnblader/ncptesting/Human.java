@@ -127,6 +127,7 @@ public class Human{
 	}
 	
 	public void walk(double a, double b, double c) {
+		//teleports, not walks
 		byte x = (byte) a;
 		byte y = (byte) b;
 		byte z = (byte) c;
@@ -269,6 +270,7 @@ public class Human{
 		}
 	}
 	
+	@Deprecated
 	public void block() {
 		Packet29DestroyEntity packet = new Packet29DestroyEntity(id);
 		for(Player p : Bukkit.getOnlinePlayers()) {
