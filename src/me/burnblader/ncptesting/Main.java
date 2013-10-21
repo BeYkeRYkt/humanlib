@@ -31,9 +31,11 @@ public class Main extends JavaPlugin{
 			if(args.length == 1) {
 				Player player = (Player) sender;
 				@SuppressWarnings("deprecation")
+				final
 				Human h = new Human(player.getWorld(), args[0], new Random().nextInt(5000-1000)+1000, player.getLocation(), player.getItemInHand().getTypeId());
-				h.setItemInHand(new ItemStack(Material.BOW));
+				h.setItemInHand(new ItemStack(Material.COOKED_BEEF));
 				h.addPotionColor(Color.PURPLE.asBGR());
+				h.sleep();
 			}
 		}
 		

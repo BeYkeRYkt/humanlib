@@ -7,6 +7,8 @@ import java.util.Random;
 
 import net.minecraft.server.v1_6_R3.DataWatcher;
 import net.minecraft.server.v1_6_R3.EntityHuman;
+import net.minecraft.server.v1_6_R3.Packet17EntityLocationAction;
+import net.minecraft.server.v1_6_R3.Packet18ArmAnimation;
 import net.minecraft.server.v1_6_R3.Packet20NamedEntitySpawn;
 import net.minecraft.server.v1_6_R3.Packet29DestroyEntity;
 import net.minecraft.server.v1_6_R3.Packet33RelEntityMoveLook;
@@ -252,6 +254,46 @@ public class Human{
 		Packet40EntityMetadata packet40 = new Packet40EntityMetadata(id, d, true);
 		for(Player p : Bukkit.getOnlinePlayers()) {
 			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet40);
+		}
+	}
+	
+	public void damage() {
+		Packet18ArmAnimation packet18 = new Packet18ArmAnimation();
+		packet18.a = id;
+		packet18.b = 2;
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet18);
+		}
+	}
+	
+	public void swingArm() {
+		Packet18ArmAnimation packet18 = new Packet18ArmAnimation();
+		packet18.a = id;
+		packet18.b = 1;
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet18);
+		}
+	}
+	
+	@Deprecated
+	public void eatInHand() {
+		Packet18ArmAnimation packet18 = new Packet18ArmAnimation();
+		packet18.a = id;
+		packet18.b = 5;
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet18);
+		}
+	}
+	
+	public void sleep() {
+		Packet17EntityLocationAction packet17 = new Packet17EntityLocationAction();
+		packet17.a = id;
+		packet17.b = (int) getX();
+		packet17.c = (int) getY();
+		packet17.d = (int) getZ();
+		packet17.e = 0;
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet17);
 		}
 	}
 	
